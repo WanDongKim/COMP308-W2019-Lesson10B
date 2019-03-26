@@ -10,27 +10,29 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  user:User;
+  user: User;
 
   constructor(
     private flashMessage: FlashMessagesService,
-    private authService:AuthService,
-    private router:Router
+    private authService: AuthService,
+    private router: Router
   ) { }
 
   ngOnInit() {
     this.user = new User();
-    this.user = JSON.parse(localStorage.getItem('user'));
   }
-  onLogoutClick():void{
+  onLogoutClick(): void{
     this.authService.logout().subscribe(data =>{
       this.flashMessage.show(data.msg, {cssClass: 'alert-warning', timeOut: 5000});
       this.router.navigate(['/login']);
     })
   }
 
-  isLoggedIn():boolean{
-    return this.authService.loggedIn();
+  isLoggedIn(): boolean{
+    const result = this.authService.loggedIn();
+    if(result){
+      this.user = JSON.parse(localStorage.getItem('user'));
+    }
+    return result;
   }
-
 }
